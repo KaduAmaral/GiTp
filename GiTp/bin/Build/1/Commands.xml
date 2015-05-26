@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<root>
+	<commands>
+		<command name="help">
+			<summary>Lista de comandos.</summary>
+			<arguments></arguments>
+			<params></params>
+			<examples>
+				<example>help</example>
+			</examples>
+		</command>
+    <comand name="cd">
+      <summary>Altera o diretório atual.</summary>
+      <arguments>
+        <argument name="directory">
+          <summary>Caminho do diretório</summary>
+          <values></values>
+        </argument>
+      </arguments>
+      <params></params>
+      <examples>
+        <example>cd teste</example>
+        <example>cd c:/teste</example>
+      </examples>
+    </comand>
+    <comand name="rd">
+      <summary>Altera o diretório remoto atual.</summary>
+      <arguments>
+        <argument name="directory">
+          <summary>Caminho do diretório</summary>
+          <values></values>
+        </argument>
+      </arguments>
+      <params></params>
+      <examples>
+        <example>rd public_html</example>
+        <example>rd foo/bar</example>
+        <example>rd ../</example>
+      </examples>
+    </comand>
+    <comand name="dir">
+      <summary>Lista os arquivos e subdiretórios do diretório atual.</summary>
+      <arguments></arguments>
+      <params></params>
+      <examples>
+        <example>dir</example>
+      </examples>
+    </comand>
+    <comand name="rdir">
+      <summary>Lista os arquivos e subdiretórios do diretório remoto atual.</summary>
+      <arguments></arguments>
+      <params></params>
+      <examples>
+        <example>rdir</example>
+      </examples>
+    </comand>
+		<command name="set">
+			<summary>Seta o valor de uma variável de execução.</summary>
+			<arguments>
+				<argument name="var">
+					<summary>Nome da variável</summary>
+					<values>
+						<value>repository</value>
+						<value>host</value>
+						<value>user</value>
+						<value>pass</value>
+						<value>port</value>
+						<value>dir</value>
+					</values>
+				</argument>
+				<argument name="value">
+					<summary>Valor da variável</summary>
+					<values></values>
+				</argument>
+			</arguments>
+			<params></params>
+			<examples>
+				<example>set repository c:/caminho/do/repositorio</example>
+			</examples>
+		</command>
+		<command name="save">
+			<summary>Salva a conexão ativa.</summary>
+			<arguments></arguments>
+			<params></params>
+			<examples>
+				<example>save</example>
+			</examples>
+		</command>
+    <command name="remove">
+			<summary>Exclui a conexão ativa.</summary>
+			<arguments></arguments>
+			<params></params>
+			<examples>
+				<example>remove</example>
+			</examples>
+		</command>
+    <command name="repo">
+			<summary>Comandos referênte ao repositório.</summary>
+			<arguments>
+        <argumment name="command">
+          <summary>Comando do repositório</summary>
+          <values>
+            <value>files</value>
+          </values>
+        </argumment>
+      </arguments>
+			<params>
+        <param name="-here" summary="Aponta o diretório atual como repositório" />
+      </params>
+			<examples>
+				<example>repo -here</example>
+        <example>repo files</example>
+        <example>repo files -here</example>
+			</examples>
+		</command>
+		<command name="connection">
+			<summary>Seta uma conexão ou informa a conexão atual dependendo dos argumentos.</summary>
+			<arguments>
+				<argument>name</argument>
+				<argument>host</argument>
+				<argument>host:port</argument>
+				<argument>user</argument>
+				<argument>pass</argument>
+				<argument>port</argument>
+			</arguments>
+			<params>
+				<param name="-p" summary="Exibe a senha junto com as informações da conexão"/>
+			</params>
+			<examples>
+				<example>connection</example>
+				<example>connection @name</example>
+				<example>connection ftp.host.com[:port] [user] [pass] [port]</example>
+			</examples>
+		</command>
+    <command name="con">
+      <summary>Alias para "connection".</summary>
+      <arguments></arguments>
+      <params></params>
+      <examples>
+        <example>con</example>
+      </examples>
+    </command>
+    <command name="connect">
+      <summary>Conecta ao servidor com a conexão ativa.</summary>
+      <arguments></arguments>
+      <params></params>
+      <examples>
+        <example>connect</example>
+      </examples>
+    </command>
+    <command name="disconnect">
+      <summary>Desconecta do servidor.</summary>
+      <arguments></arguments>
+      <params></params>
+      <examples>
+        <example>disconnect</example>
+      </examples>
+    </command>
+    <command name="connections">
+      <summary>Lista todas as conexões salvas.</summary>
+      <arguments></arguments>
+      <params></params>
+      <examples>
+        <example>connections</example>
+      </examples>
+    </command>
+    <command name="cons">
+      <summary>Alias para "connections".</summary>
+      <arguments></arguments>
+      <params></params>
+      <examples>
+        <example>cons</example>
+      </examples>
+    </command>
+  	<command name="exit">
+			<summary>Encerra a execução do programa.</summary>
+			<arguments></arguments>
+			<params></params>
+			<examples>
+				<example>exit</example>
+			</examples>
+		</command>
+	</commands>
+</root>
