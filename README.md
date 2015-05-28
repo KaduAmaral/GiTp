@@ -1,10 +1,17 @@
-# GiTp
+#GiTp
 O aplicativo envia os arquivos do último Commit de um repositório Git Local para um servidor FTP.
 
-# ToDo
+#ToDo
 
   1. Registrar commits enviados
   2. Documentar Comandos
+
+#ChangeLog
+
+
+###Versão 1.0.0.2
+
+  . Corrigido retorno em HTML do Servidor
 
 #Author
 

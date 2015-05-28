@@ -79,7 +79,7 @@ namespace GiTp
                         ListDir();
                         break;
                     case "rdir":
-                        if (ftp != null && ftp.IsConnected)
+                        if (ftp != null)
                             ftp.ListDir();
                         else
                             invalido = true;
@@ -109,7 +109,7 @@ namespace GiTp
                         ftp.ReCreate();
                         ftp.Connect();
                         if (ftp.IsConnected)
-                            Util.Success("Conecatado...");
+                            Util.Success("Conectado...");
                         else
                             Util.Error("Falha: " + ftp.Error);
                         break;
@@ -236,7 +236,7 @@ namespace GiTp
                         RunCommand("cd "+Con.LocalDir);
 
                     ftp = new FTPConnection(Con);
-                    RunCommand("connection | connect");
+                    RunCommand("connect | connection");
                 }
                 else
                     Util.Error("Não foi possível localizar o conexão denominada '" + cmd.Arguments.First().Value.Substring(1) + "'.");
@@ -327,6 +327,11 @@ namespace GiTp
             if (p == "-p") Console.WriteLine("Senha:  " + (Con.Pass == null ? "" : Con.Pass));
             Console.WriteLine("Diretório Remoto:  " + (Con.RemoteDir == null ? "" : Con.RemoteDir));
             Console.WriteLine("Diretório Local:  " + (Con.LocalDir == null ? "" : Con.LocalDir));
+            Console.Write("Status: ");
+            if (ftp.IsConnected)
+                Util.Success("Conectado");
+            else
+                Util.Error("Desconectado");
             Util.Echo(Util.Hr(), ConsoleColor.Gray);
         }
 

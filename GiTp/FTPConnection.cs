@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
+
 
 namespace GiTp
 {
@@ -117,9 +119,11 @@ namespace GiTp
         {
 
             StreamReader streamReader;
+            String result;
 
             this.ChangeMethod(WebRequestMethods.Ftp.ListDirectory);
-            if (!this.Connect())
+            this.Connect();
+            if (!this.IsConnected)
             {
                 Util.Error(this.Error);
                 return;
@@ -127,25 +131,28 @@ namespace GiTp
 
             try
             {
-                streamReader = new StreamReader(this.Response.GetResponseStream());
+                using (streamReader = new StreamReader(this.Response.GetResponseStream()))
+                {
+                    result = streamReader.ReadToEnd();
+                }
             }
             catch (Exception e)
             {
+                this.Close();
                 Util.Error(e.Message);
                 return;
             }
             
 
-            List<string> directories = new List<string>();
+            List<string> directories = parseDirectories(result);
 
-            string line = streamReader.ReadLine();
-            while (!string.IsNullOrEmpty(line))
-            {
-                directories.Add(line);
-                line = streamReader.ReadLine();
-            }
+            //string line = streamReader.ReadLine();
+            //while (!string.IsNullOrEmpty(line))
+            //{
+            //    directories.Add(line);
+            //    line = streamReader.ReadLine();
+            //}
 
-            streamReader.Close();
 
             string header;
             header = Con.Name + ": " + Con.Host + " | ";
@@ -168,6 +175,47 @@ namespace GiTp
 
             Util.Hr(true);
 
+            this.Refresh();
+
+        }
+
+        private List<string> parseDirectories(String result)
+        {
+            List<string> directories = new List<string>();
+
+            HtmlDocument document = new HtmlDocument();
+
+            document.LoadHtml(result);
+
+            // Se a resposta conter um HTML Válido
+            if (document.ParseErrors.Count() == 0) {
+
+                foreach (var el in document.DocumentNode.Descendants("a")) {
+
+                    if (el.ChildNodes.Count > 0 && el.ChildNodes.First().Name == "img") continue;
+
+                    var diretorio = '/' + el.Attributes["href"].Value.Trim('/');
+
+                    switch (diretorio)
+                    {
+                        case "":
+                        case "/":
+                        case "/%2f":
+                        case "/%2e%2e":
+                            continue;
+                    }
+
+                    if (!directories.Contains(diretorio))
+                        directories.Add(diretorio);
+                }
+            }
+            else // Se não, provavelmente é a listagem dos diretórios
+            {
+                foreach (var diretorio in result)
+                    directories.Add(diretorio.ToString());
+            }
+
+            return directories;
         }
 
         public bool ChangeDir(String dir, Boolean createdir = false, Boolean absolutePath = false)
@@ -219,8 +267,10 @@ namespace GiTp
                 }
             }
 
+            
             Con.RemoteDir = dir.TrimEnd('/');
-            this.Refresh();
+            this.ChangeMethod(WebRequestMethods.Ftp.ListDirectory);
+            this.Connect();
 
             // Se falhar volta para o diretório anterior
             if (!this.IsConnected)
@@ -255,7 +305,6 @@ namespace GiTp
             this.Con.RemoteDir = this.Con.RemoteDir.TrimEnd('/') + '/' + fileName;
 
             this.ChangeMethod(WebRequestMethods.Ftp.DeleteFile);
-
             return this.Connect();
         }
 
@@ -283,8 +332,8 @@ namespace GiTp
             
             // Coloca em modo de Upload
             this.ChangeMethod(WebRequestMethods.Ftp.UploadFile);
-            
             this.Request.UseBinary = true;
+
 
 
             try
@@ -300,6 +349,7 @@ namespace GiTp
             }
             catch (Exception e)
             {
+                this.Close();
                 Util.Error(e.Message);
                 return false;
             }
@@ -360,13 +410,17 @@ namespace GiTp
 
             try
             {
-                FtpWebResponse response = (FtpWebResponse)req.GetResponse();
-                return true;
+                using (FtpWebResponse response = (FtpWebResponse)req.GetResponse())
+                {
+                    return true;
+                }
             }
             catch (WebException ex)
             {
-                FtpWebResponse response = (FtpWebResponse)ex.Response;
-                return (response.StatusCode != FtpStatusCode.ActionNotTakenFileUnavailable);
+                using (FtpWebResponse response = (FtpWebResponse)ex.Response)
+                {
+                    return (response.StatusCode != FtpStatusCode.ActionNotTakenFileUnavailable);
+                }
             }
         }
 
@@ -395,6 +449,7 @@ namespace GiTp
             {
                 Util.Error("Falha na conexão: " + Con.Name);
                 Util.Warning(e.Message);
+                if (this.IsConnected) this.Close();
                 ret = false;
             }
 
